@@ -10,7 +10,3 @@ apt-get clean
 
 
 EXPOSE 6379
-
-
-
-CMD ["curl", "redis-server"]
