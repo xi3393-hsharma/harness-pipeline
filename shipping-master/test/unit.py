@@ -18,4 +18,4 @@
 # if __name__ == '__main__':
 #     unittest.main()
 
-print("Test changed successfully, waiting for approval")
+print("Sample change")
