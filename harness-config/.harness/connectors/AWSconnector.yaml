@@ -1,0 +1,12 @@
+connector:
+  name: AWS-connector
+  identifier: AWSconnector
+  description:
+  orgIdentifier: default
+  projectIdentifier: pingpong
+  type: Aws
+  spec:
+    credential:
+      type: Irsa
+    delegateSelectors:
+    - ping-pong-delegate
