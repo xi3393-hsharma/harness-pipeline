@@ -1,0 +1,18 @@
+connector:
+  name: DockerHub Connector
+  identifier: DockerHub_Connector
+  description:
+  orgIdentifier: default
+  projectIdentifier: pingpong
+  type: DockerRegistry
+  spec:
+    dockerRegistryUrl: https://index.docker.io/v1/
+    providerType: DockerHub
+    auth:
+      type: UsernamePassword
+      spec:
+        username: hridyanshu
+        usernameRef: null
+        passwordRef: DockerHub_Password
+    delegateSelectors:
+    - ping-pong-delegate
