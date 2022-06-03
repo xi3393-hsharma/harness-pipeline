@@ -1,0 +1,12 @@
+connector:
+  name: k8s-connector
+  identifier: k8sconnector
+  description:
+  orgIdentifier: default
+  projectIdentifier: pingpong
+  type: K8sCluster
+  spec:
+    credential:
+      type: InheritFromDelegate
+    delegateSelectors:
+    - ping-pong-delegate
