@@ -1,0 +1,24 @@
+connector:
+  name: docker-demo
+  identifier: dockerdemo
+  description:
+  orgIdentifier: default
+  projectIdentifier: pingpong
+  type: Github
+  spec:
+    url: https://github.com/xi3393-hsharma/harness-pipeline
+    authentication:
+      type: Http
+      spec:
+        type: UsernameToken
+        spec:
+          username: xi3393-hsharma
+          tokenRef: Github_secret
+    apiAccess:
+      type: Token
+      spec:
+        tokenRef: Github_secret
+    delegateSelectors:
+    - ping-pong-delegate
+    executeOnDelegate: true
+    type: Repo
