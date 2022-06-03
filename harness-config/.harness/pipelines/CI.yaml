@@ -11,8 +11,8 @@ pipeline:
                 build: <+input>
     stages:
         - stage:
-              name: Build
-              identifier: Build
+              name: Build-New
+              identifier: Buildnew
               type: CI
               spec:
                   cloneCodebase: true
