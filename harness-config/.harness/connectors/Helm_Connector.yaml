@@ -1,0 +1,13 @@
+connector:
+  name: Helm Connector
+  identifier: Helm_Connector
+  description:
+  orgIdentifier: default
+  projectIdentifier: pingpong
+  type: HttpHelmRepo
+  spec:
+    helmRepoUrl: https://charts.bitnami.com/bitnami
+    auth:
+      type: Anonymous
+    delegateSelectors:
+    - ping-pong-delegate
