@@ -1,0 +1,125 @@
+pipeline:
+    name: tf-test
+    identifier: tftest
+    projectIdentifier: pingpong
+    orgIdentifier: default
+    tags: {}
+    stages:
+        - stage:
+              name: tf-apply
+              identifier: tfapply
+              description: ""
+              type: Deployment
+              spec:
+                  serviceConfig:
+                      serviceRef: tftest
+                      serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                              variables: []
+                              manifests:
+                                  - manifest:
+                                        identifier: helm_chart
+                                        type: HelmChart
+                                        spec:
+                                            store:
+                                                type: Http
+                                                spec:
+                                                    connectorRef: Helm_Connector
+                                            chartName: bitnami/fluentd
+                                            chartVersion: ""
+                                            helmVersion: V3
+                                            skipResourceVersioning: false
+                  infrastructure:
+                      environmentRef: test
+                      infrastructureDefinition:
+                          type: KubernetesDirect
+                          provisioner:
+                              steps:
+                                  - step:
+                                        type: TerraformPlan
+                                        name: tf-plan
+                                        identifier: tfplan
+                                        timeout: 10m
+                                        spec:
+                                            provisionerIdentifier: plan
+                                            configuration:
+                                                command: Apply
+                                                configFiles:
+                                                    store:
+                                                        spec:
+                                                            connectorRef: GitHub_Connect
+                                                            gitFetchType: Branch
+                                                            branch: main
+                                                            folderPath: dev/infra/02-ec2
+                                                        type: Github
+                                                secretManagerRef: harnessSecretManager
+                                  - step:
+                                        type: HarnessApproval
+                                        name: Plan Approval
+                                        identifier: Plan_Approval
+                                        timeout: 1d
+                                        spec:
+                                            approvalMessage: Please approve the plan
+                                            includePipelineExecutionHistory: true
+                                            approvers:
+                                                userGroups:
+                                                    - account.Approvers
+                                                minimumCount: 1
+                                                disallowPipelineExecutor: false
+                                            approverInputs: []
+                                  - step:
+                                        type: TerraformApply
+                                        name: tf-apply
+                                        identifier: tfapply
+                                        timeout: 10m
+                                        spec:
+                                            provisionerIdentifier: plan
+                                            configuration:
+                                                type: InheritFromPlan
+                              rollbackSteps:
+                                  - step:
+                                        type: TerraformRollback
+                                        name: tf-rollback
+                                        identifier: tfrollback
+                                        timeout: 10m
+                                        spec:
+                                            provisionerIdentifier: plan
+                          spec:
+                              connectorRef: k8sconnector
+                              namespace: harness-delegate-ng
+                              releaseName: release-<+INFRA_KEY>
+                      allowSimultaneousDeployments: false
+                  execution:
+                      steps:
+                          - step:
+                                type: K8sCanaryDeploy
+                                name: deploy-canary
+                                identifier: deploycanary
+                                spec:
+                                    skipDryRun: false
+                                    instanceSelection:
+                                        type: Count
+                                        spec:
+                                            count: 1
+                                timeout: 10m
+                      rollbackSteps:
+                          - step:
+                                type: K8sCanaryDeploy
+                                name: deploy
+                                identifier: deploy
+                                spec:
+                                    skipDryRun: false
+                                    instanceSelection:
+                                        type: Count
+                                        spec:
+                                            count: 1
+                                timeout: 10m
+                  serviceDependencies: []
+              tags: {}
+              failureStrategies:
+                  - onFailure:
+                        errors:
+                            - AllErrors
+                        action:
+                            type: StageRollback
