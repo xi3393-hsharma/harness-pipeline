@@ -19,6 +19,6 @@ connector:
       spec:
         tokenRef: Github_secret
     delegateSelectors:
-    - ping-pong-delegate
+    - test-github-experience
     executeOnDelegate: true
     type: Repo
