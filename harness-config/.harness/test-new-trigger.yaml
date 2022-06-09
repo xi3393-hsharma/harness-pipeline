@@ -1,0 +1,26 @@
+trigger:
+    name: test-new-trigger
+    identifier: testnewtrigger
+    enabled: true
+    orgIdentifier: default
+    projectIdentifier: pingpong
+    pipelineIdentifier: Terraformterragrunt
+    source:
+        type: Webhook
+        spec:
+            type: Github
+            spec:
+                type: Push
+                spec:
+                    connectorRef: GitHub_Connector
+                    autoAbortPreviousExecutions: false
+    inputYaml: |
+        pipeline:
+            identifier: Terraformterragrunt
+            properties:
+                ci:
+                    codebase:
+                        build:
+                            type: branch
+                            spec:
+                                branch: <+trigger.branch>
